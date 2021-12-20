@@ -1,0 +1,851 @@
+/**A mimic of the game JOEPARDY! 
+Most of the game is design by a button method **/
+
+//Global variables
+var currentScene = 0;
+var splashScreen;
+var instructScreen;
+var gameScreen; 
+var score = 0;
+var question = 0;
+var answeredQuestion = false; 
+
+//Draws blackboard and boarders
+var themeBackGround = function() {
+    //The blackboard
+    fill(214, 208, 180);
+    rect(0,0,400,400);
+    
+    //Boarders
+    fill(0, 0, 0);
+    rect(0, 0, 10, 400);
+    rect(390, 0, 10, 400);
+    rect(0, 0, 400, 10);
+    rect(0, 390, 400, 10);
+    
+    //Cornors
+    fill(184, 53, 53);
+    triangle(0, 0, 0, 43, 45, 1);
+    triangle(356, 1, 400, 45, 400, 0);
+    triangle(0, 361, 0, 400, 50, 400);
+    triangle(400, 361, 401, 400, 350, 400);
+
+};
+
+
+// Dom & Lee's Bitmoji
+var drawBitMoji = function(bitX, bitY, bitHeight) {
+    
+        noStroke(); //no outline for head
+        fill(231, 196, 169); //skin tone
+        ellipse(bitX+(bitHeight/100*0),bitY+(bitHeight/100*0),bitHeight/100*75,bitHeight/100*90); //head
+        
+        fill(43, 62, 138); //hat color
+        arc(bitX+(bitHeight/100*0),bitY-(bitHeight/100*24),bitHeight/100*63,bitHeight/100*41    ,-183,4); //hat
+        fill(231, 196, 169); // skin tone
+        arc(bitX-(bitHeight/100*1),bitY-(bitHeight/100*29),bitHeight/100*27,bitHeight/100*21    ,181,359); //hat detail
+        
+        // noStroke(); //no outline for cheeks
+        // fill(255, 255, 255);
+        // triangle(bitX-(bitHeight/100*23),bitY+(bitHeight/100*73),bitX-(bitHeight/100*66),bitY-(bitHeight/100*172),bitX-(bitHeight/100*58),bitY-(bitHeight/100*79)); // left cheek
+        // triangle(bitX+(bitHeight/100*96),bitY-(bitHeight/100*270),bitX+(bitHeight/100*35),bitY-(bitHeight/100*7),bitX+(bitHeight/100*33),bitY+(bitHeight/100*94)); // right cheek
+        
+        fill(15, 14, 14); //shirt color
+        quad(bitX+(bitHeight/100*23),bitY+(bitHeight/100*37),bitX-(bitHeight/100*22),bitY        +(bitHeight/100*38),bitX-(bitHeight/100*53),bitY+(bitHeight/100*73),bitX+(bitHeight/100*65),bitY+(bitHeight/100*71)); //shirt
+        
+        
+        fill(115, 78, 78); //beard color
+        arc(bitX+(bitHeight/100*0),bitY+(bitHeight/100*19),bitHeight/100*67,bitHeight/100*52,-16,197); //beard
+        
+        stroke(10, 10, 10); //outline for mouth
+        fill(250, 250, 250); // mouth color
+        arc(bitX+(bitHeight/100*0),bitY+(bitHeight/100*22),bitHeight/100*33,bitHeight/100*21,-6,185); //mouth
+        line(bitX+(bitHeight/100*17),bitY+(bitHeight/100*20),bitX-(bitHeight/100*17),bitY+(bitHeight/100*21)); //top lip
+        
+        stroke(5, 5, 5); // outline for eyes
+        ellipse(bitX+(bitHeight/100*11),bitY-(bitHeight/100*6),bitHeight/100*19,bitHeight/100*10); // right eye
+        ellipse(bitX-(bitHeight/100*13),bitY-(bitHeight/100*5),bitHeight/100*20,bitHeight/100*10); // left eye
+        fill(74, 63, 6);
+        ellipse(bitX+(bitHeight/100*15),bitY-(bitHeight/100*7),bitHeight/100*5,bitHeight/100*5); // right pupil
+        ellipse(bitX-(bitHeight/100*10),bitY-(bitHeight/100*6),bitHeight/100*5,bitHeight/100*5); // left pupil
+        
+        fill(231, 196, 169); // nose color
+        bezier(bitX-(bitHeight/100*1),bitY+(bitHeight/100*0),bitX+(bitHeight/100*21),bitY+(bitHeight/100*22),bitX-(bitHeight/100*2),bitY+(bitHeight/100*11),bitX-(bitHeight/100*3),bitY+(bitHeight/100*15)); // nose
+        
+        noFill();
+        arc(bitX-(bitHeight/100*13),bitY+(bitHeight/100*158), bitHeight/100*111, bitHeight/100*349,260,278); // left eyebrow
+        arc(bitX+(bitHeight/100*14),bitY+(bitHeight/100*156),bitHeight/100*118,bitHeight/100*349,261,276); // right eyebrow
+        
+        fill(250, 247, 247); //text color
+        textSize(bitHeight/100*23); // text size
+        text("DS",bitX-(bitHeight/100*0),bitY+(bitHeight/100*59)); //initials
+        };
+var head = function(x,y,h){
+
+fill(199, 177, 177); 
+arc ( x+(h/100),y+(h/100*45),(h/100*69),(h/100*250),-155,-24);  // hat
+
+//fill(255, 255, 255);
+//text("B",x-4,y-57);
+
+    fill(230, 180, 115);
+    ellipse (x+(h/100) , y+(h/100) , (h/100*65) , (h/100*100) ); // head
+    
+    fill(0, 0, 0);
+    arc ( x+(h/100),y-(h/100*26),(h/100*56),(h/100*48),166,375); // hair
+    
+    fill(0, 0, 0);
+    arc ( x-(h/100*13),y-(h/100*18),(h/100*17),(h/100*5),138,390); // left eyesbrow
+    
+    fill(0, 0, 0);
+    arc ( x+(h/100*13),y-(h/100*18),(h/100*17),(h/100*5),38,390); // right eyesbrow
+
+    
+    fill(250, 250, 250);
+    ellipse (x-(h/100*12) , y-(h/100*10) , (h/100*13) , (h/100*11) ); // left eyes
+    
+    fill(230, 180, 115);
+    arc ( x+(h/100),y+(h/100*17),(h/100*9),(h/100*20),176,355); // nose
+
+    fill(0, 0, 0);
+    line (x-(h/100*-5),y+(h/100*17),x+(h/100*-4),y+(h/100*16)); //upperlips
+    
+    fill(255, 255, 255);
+    arc ( x+(h/100), y+(h/100*23),(h/100*30),25,3,181); // mouth
+    
+    fill(0, 0, 0);
+    line (x-(h/100*15),y+(h/100*23),x+(h/100*14),y+(h/100*23)); //upperlips
+    
+    fill(0, 0, 0);
+    line (x-(h/100*7),y+(h/100*23),x-(h/100*7),y+(h/100*31)); //teeths 1
+    
+    fill(0, 0, 0);
+    line (x+(h/100*4),y+(h/100*23),x+(h/100*4),y+(h/100*33)); //teeths 2
+    
+    fill(0, 0, 0);
+    line (x+(h/100*13),y+(h/100*29),x-(h/100*11),y+(h/100*29)); //bottom teeth
+    
+    fill(0, 0, 0);
+    ellipse (x-(h/100*12),y-(h/100*10),(h/100*6),(h/100*6)); //left pupil
+
+    fill(255, 255, 255);
+    ellipse (x+(h/100*13) , y-(h/100*10) , (h/100*13) , (h/100*11) ); // right eyes
+    
+    fill(0, 0, 0);
+    ellipse (x+(h/100*13),y-(h/100*10),(h/100*6),(h/100*6)); // right pupil
+};
+var body = function(x,y,h) {
+        
+    fill(255, 255, 255);
+    rect(x-(h/100*40),y+(h/100*51),(h/100*80),(h/100*92)); // shirt
+    
+    //fill(255, 255, 255);
+    //text("LS",x-7,y+110);
+    
+    fill(230, 180, 115);
+    arc ( x+(h/100),y+(h/100*49),(h/100*44),(h/100*23),363,535); // lower neck
+    
+    fill(255, 250, 250);
+    quad(x+(h/100*115),y+(h/100*90),x+(h/100*100),y+(h/100*105),x+(h/100*40),y+(h/100*75),x+(h/100*40),y+(h/100*50));  // right hand
+
+
+    fill(255, 250, 250);
+    quad(x-(h/100*123),y+(h/100*96),x-(h/100*40),y+(h/100*50),x-(h/100*40),y+(h/100*79),x-(h/100*100),y+(h/100*110));  // left hand
+    
+};
+
+//Button code from khan
+var Button = function(config) {
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+};
+Button.prototype.draw = function() {
+    fill(179, 61, 61);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(255, 255, 255);
+    textAlign(CENTER, CENTER);
+    textSize(19);
+    text(this.label, this.x+47, this.y+this.height/1.9);
+};
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+Button.prototype.handleMouseClick = function() {
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+
+
+//Back button when on question screen
+var backButtonQ = new Button ({
+    x: 145,
+    y: 345,
+    width: 92,
+    height: 40,
+    label: "Go Back",
+    onClick: function() {
+        currentScene = 2;
+        answeredQuestion = false; 
+        loop();
+    }
+});
+
+//Start game button
+var startButton = new Button ({
+    x: 58,
+    y: 322,
+    width: 101,
+    height: 40,
+    label: "  Start Here",
+    onClick: function() {
+        currentScene = 2;
+    }
+});
+
+//How to play button
+var instructions = new Button ({
+    x: 211,
+    y: 322,
+    width: 111,
+    height: 40,
+    label: "    How to play!",
+    onClick: function() {
+        currentScene = 1;
+    }
+});
+
+//When on Instruction scene,back button
+var instbackButton = new Button ({
+    x: 152,
+    y: 322,
+    width: 92,
+    height: 40,
+    label: "Go Back",
+    onClick: function() {
+        currentScene = 0;
+    }
+});
+
+//Back to main menu button
+var mainMenu = new Button ({
+    x: 64,
+    y: 322,
+    width: 106,
+    height: 40,
+    label: "   Main Menu",
+    onClick: function() {
+        currentScene = 0;
+    }
+});
+
+//Restart button on game screen
+var restartButton = new Button ({
+    x: 240,
+    y: 322,
+    width: 93,
+    height: 40,
+    label: "Restart",
+    onClick: function() {
+        currentScene = 2;
+        score = 0;
+    }
+});
+
+/**List of questions scene**/ 
+//Scene 3
+var question1 = function() {
+
+    //questions asked
+    textSize(18);
+    fill(72, 0, 255);
+    text("Question:",75,60);
+    fill(0, 0, 0);
+    text("Which of the following function of Array object", 199, 100);
+    text("extracts a section of an array and returns", 179, 124);
+    text("a new array?", 70, 146);
+    
+    //possible answer
+    fill(0, 21, 255);
+    text("Answer:",75,200);
+    fill(0, 0, 0);
+    text("Slice ()",166,225); // correct answer
+    // Explanation: slice() − Extracts a section of an array and returns a new array.
+    fill(255, 255, 255);
+    ellipse(121,226,12,12);
+    fill(0, 0, 0);
+    text("Shift ()",166,259);  // wrong
+    fill(255, 255, 255);
+    ellipse(121,259,12,12);
+    fill(0, 0, 0);
+    text("Reverse ()",182,289); //wrong
+    fill(255, 255, 255);
+    ellipse(121,291,12,12);
+    
+    backButtonQ.draw();
+
+};
+//Scene 4
+var question2 = function() {
+
+    //questions asked
+    textSize(18);
+    fill(72, 0, 255);
+    text("Question:",75,60);
+    fill(0, 0, 0);
+    text("What does HTML stand for?", 199, 100);
+    
+    
+    //possible answer
+    fill(0, 21, 255);
+    text("Answer:",75,186);
+    fill(0, 0, 0);
+    text("Hyperlinks and Text Markup Language",225,216); // wrong answer
+    fill(255, 255, 255);
+    ellipse(60,218,12,12);
+    fill(0, 0, 0);
+    text("Hypertext Markup Language",186,250); // correct answer
+    fill(255, 255, 255);
+    ellipse(60,252,12,12);
+    fill(0, 0, 0);
+    text("Home Tool Markup Language",191,284); // wrong answer
+    fill(255, 255, 255);   
+    ellipse(60,286,12,12); 
+    
+    backButtonQ.draw();
+
+};
+//Scene 5
+var question3 = function() {
+
+    //questions asked
+    textSize(18);
+    fill(72, 0, 255);
+    text("Question:",75,60);
+    fill(0, 0, 0);
+    text("What does CSS stand for?", 188, 100);
+    
+    
+    //possible answer
+    fill(0, 21, 255);
+    text("Answer:",75,186);
+    fill(0, 0, 0);
+    text("Computer Style Sheet",185,216); // wrong answer
+    fill(255, 255, 255);
+    ellipse(85,218,12,12);
+    fill(0, 0, 0);
+    text("Colorful Style Sheet",178,245); // wrong answer
+    fill(255, 255, 255);
+    ellipse(85,246,12,12);
+    fill(0, 0, 0);
+    text("Cascading Style Sheets",194,273); // correct answer
+    fill(255, 255, 255);   
+    ellipse(85,274,12,12); 
+    
+    backButtonQ.draw();
+
+};
+//Scene 6
+var question4 = function() {
+
+    //questions asked
+    textSize(18);
+    fill(72, 0, 255);
+    text("Question:",75,60);
+    fill(0, 0, 0);
+    text("How does a WHILE loop start?", 187, 100);
+    
+    
+    //possible answer
+    fill(0, 21, 255);
+    text("Answer:",75,186);
+    fill(0, 0, 0);
+    text(" while (i <= 10) ",177,216); // correct answer
+    fill(255, 255, 255);
+    ellipse(107,219,12,12);
+    fill(0, 0, 0);
+    text(" while (i <= 10; i++)",192,243); // wrong answer
+    fill(255, 255, 255);
+    ellipse(107,246,12,12);
+    fill(0, 0, 0);
+    text(" while i = 1 to 10",181,271); // wrong answer
+    fill(255, 255, 255);   
+    ellipse(107,272,12,12); 
+    
+    backButtonQ.draw();
+
+};
+//Scene 7
+var question5 = function() {
+
+    //questions asked
+    textSize(18);
+    fill(72, 0, 255);
+    text("Question:",75,60);
+    fill(0, 0, 0);
+    text("Which of these is not a", 95, 48, 201, 100);
+    text("type of loop in JavaScript?", 198, 127);
+    
+    //possible answer
+    textSize(20);
+    fill(0, 21, 255);
+    text("Answer:",75,183);
+    fill(0, 0, 0);
+    text(" for loop",149,215); // wrong answer
+    fill(255, 255, 255);
+    ellipse(106,217,12,12);
+    fill(0, 0, 0);
+    text(" repeat loop",165,244); // correct answer
+    fill(255, 255, 255);
+    ellipse(106,247,12,12);
+    fill(0, 0, 0);
+    text(" while loop ",163,276); // wrong answer
+    fill(255, 255, 255);   
+    ellipse(106,277,12,12); 
+    
+    backButtonQ.draw();
+
+};
+//Scene 8
+var question6 = function() {
+
+    //questions asked
+    textSize(19);
+    fill(72, 0, 255);
+    text("Question:",75,60);
+    fill(0, 0, 0);
+    text("Which of the following type of variable takes", 200, 100);
+    text("precedence over other if names are same?", 199, 120);
+    
+    
+    //possible answer
+    textSize(20);
+    fill(0, 21, 255);
+    text("Answer:",75,186);
+    fill(0, 0, 0);
+    text(" Gobal Variable",160,221); // wrong answer
+    fill(255, 255, 255);
+    ellipse(88,221,12,12);
+    fill(0, 0, 0);
+    text(" Local Variable",160,251); // correct answer
+    fill(255, 255, 255);
+    ellipse(88,251,12,12);
+    fill(0, 0, 0);
+    text(" All of the Above",166,283); // wrong answer
+    fill(255, 255, 255);   
+    ellipse(88,283,12,12); 
+    
+    backButtonQ.draw();
+
+};
+
+//Question buttons
+var buttonQuestion1 = new Button ({
+    x: 31,
+    y: 117,
+    width: 107,
+    height: 84,
+    label: "100",
+    onClick: function() {
+        currentScene = 3;
+    }
+});
+var buttonQuestion2 = new Button ({
+    x: 148,
+    y: 117,
+    width: 107,
+    height: 84,
+    label: "100",
+    onClick: function() {
+        currentScene = 4;
+    }
+});
+var buttonQuestion3 = new Button ({
+    x: 265,
+    y: 117,
+    width: 107,
+    height: 84,
+    label: "100",
+    onClick: function() {
+        currentScene = 5;
+    }
+});
+var buttonQuestion4 = new Button ({
+    x: 148,
+    y: 208,
+    width: 107,
+    height: 84,
+    label: "200",
+    onClick: function() {
+        currentScene = 6;
+    }
+});
+var buttonQuestion5 = new Button ({
+    x: 265,
+    y: 208,
+    width: 107,
+    height: 84,
+    label: "200",
+    onClick: function() {
+        currentScene = 7;
+    }
+});
+var buttonQuestion6 = new Button ({
+    x: 31,
+    y: 208,
+    width: 107,
+    height: 84,
+    label: "200",
+    onClick: function() {
+        currentScene = 8;
+    }
+});
+
+/*Splash Scene
+Scene 0 */
+var splashScreen = function() {
+    
+    //Title
+    fill(255, 0, 0);
+    textSize(35);
+    text("Computer Science", 187, 39);
+    text("Trivia", 192, 83);
+    
+    //Bitmojis
+    fill(255, 255, 255);
+    ellipse(315,158,109,114);
+    ellipse(79,153,84,86);
+    drawBitMoji(78, 142, 50);
+    head(313,142,45);
+    body(313,147,35);
+    
+    //Creaters
+    textSize(20);
+    fill(255, 0, 0);
+    text("Created by:", 195,220);
+    textSize(18);
+    fill(0, 0, 0);
+    text("Dominique Silva", 193, 247);
+    text("&", 196, 268);
+    text("Lee Suy", 197, 284);
+    
+    //Buttons
+    startButton.draw();
+    instructions.draw();
+
+};
+
+/*Instruction Scene
+Scene 1 */
+var instructScreen = function(){
+
+    //Title
+    fill(255, 0, 0);
+    textSize(40);
+    text("How to play!", 195, 50);
+    textSize(18);
+    fill(0, 0, 0);
+    text("The game consists of six tiles, that range from", 196, 100);
+    text("100 to 200 points per question. Each question", 196, 125);
+    text("will have 3 possible answer. Pick the correct ", 196, 150);
+    text("answer, you will be rewarded by how much the", 198, 173);
+    text("tile is worth. Otherwise you lose the points", 196, 196);
+
+    text("You can always RESTART", 196, 250);
+
+    
+
+    //Back Button
+    instbackButton.draw();
+
+};
+
+/*Main game screen
+Scene 2 */
+var gameScreen = function() {
+    themeBackGround();
+    textSize(25);
+    text("Score: " + score, 82, 61);
+    
+    buttonQuestion1.draw();
+    buttonQuestion2.draw();
+    buttonQuestion3.draw();
+    buttonQuestion4.draw();
+    buttonQuestion5.draw();
+    buttonQuestion6.draw();
+    
+    mainMenu.draw();
+    restartButton.draw();
+    
+
+};
+
+draw = function() {
+    //println(currentScene);
+    //Draw background
+    themeBackGround();
+    
+    if(currentScene === 0){ //Splash screen
+        splashScreen();
+    } else if(currentScene === 1){ //How to play screen
+        instructScreen();
+    } else if(currentScene === 2){ //Game screen
+        gameScreen();
+    } else if(currentScene === 3){ //Question 1 screen
+        question1();
+    } else if(currentScene === 4){ //Question 2 screen
+        question2();
+    } else if(currentScene === 5){ //Question 3 screen
+        question3();
+    } else if(currentScene === 6){ //Question 4 screen
+        question4();
+    } else if(currentScene === 7){ //Question 5 screen
+        question5();
+    } else if(currentScene === 8){ //Question 6 screen
+        question6();
+    }
+};
+
+mouseClicked = function() {
+        
+    if(currentScene === 0){ //Splash  screen
+        startButton.handleMouseClick();
+        instructions.handleMouseClick();
+    } else if(currentScene === 1){ //How to play screen
+        instbackButton.handleMouseClick();
+    } else if(currentScene === 2){ //Game screen
+        restartButton.handleMouseClick();
+        mainMenu.handleMouseClick();
+        buttonQuestion1.handleMouseClick();
+        buttonQuestion2.handleMouseClick();
+        buttonQuestion3.handleMouseClick();
+        buttonQuestion4.handleMouseClick();
+        buttonQuestion5.handleMouseClick();
+        buttonQuestion6.handleMouseClick();
+    } 
+    else if (currentScene > 2) {
+
+    
+    backButtonQ.handleMouseClick();
+    
+    //If statement for question 1 (Scene 3)
+    //Correct answer
+    if( (mouseX > 111 && mouseX < 211 && mouseY > 213 && mouseY < 239) && (currentScene === 3) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(11, 171, 0);
+        ellipse(121,226,12,12);
+        textSize(20);
+        text("Correct!", 310, 375);
+        image(getImage("creatures/Hopper-Jumping"), 290, 283, 75, 75); //Happy Hopper
+        score +=100;
+        noLoop();
+    } 
+    //Wrong answer
+    else if ( (mouseX > 111 && mouseX < 211 && mouseY > 246 && mouseY < 272) && (currentScene === 3) && !answeredQuestion){
+        answeredQuestion = true; 
+        fill(255, 0, 0);
+        ellipse(121,259,12,12);
+        textSize(20);
+        text("Incorrect!", 310, 365);
+        image(getImage("creatures/OhNoes"), 275, 280, 75, 75); //Happy Hopper
+        score -=100;
+        noLoop();
+    }
+    //Wrong answer
+    else if ( (mouseX > 111 && mouseX < 226 && mouseY > 278 && mouseY < 304) && (currentScene === 3) && !answeredQuestion){
+        answeredQuestion = true; 
+        fill(255, 0, 0);
+        ellipse(121,291,12,12);
+        text("Incorrect!", 310, 365);
+        image(getImage("creatures/OhNoes"), 275, 280, 75, 75); //Happy Hopper
+        score -=100;
+        noLoop();
+    }
+    
+   
+//If statement for question 2 (Scene 4)
+    //Wrong answer
+    if( (mouseX > 49 && mouseX < 380 && mouseY > 204 && mouseY < 230) && (currentScene === 4) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(60,218,12,12);
+        textSize(20);
+        text("Incorrect!", 310, 375);
+        image(getImage("creatures/OhNoes"), 290, 286, 75, 75); //Oh noes Hopper
+        score -=100;
+        noLoop();
+    } 
+    //Correct Answer
+    else if ( (mouseX > 49 && mouseX < 302 && mouseY > 239 && mouseY < 265) && (currentScene === 4) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(11, 171, 0);
+        ellipse(60,252,12,12);
+        textSize(20);
+        text("Correct!", 310, 365);
+        image(getImage("creatures/Hopper-Jumping"), 275, 280, 75, 75); //Oh noes Hopper
+        score +=100;
+        noLoop();
+    }
+    //Wrong Answer
+    else if ( (mouseX > 49 && mouseX < 302 && mouseY > 272 && mouseY < 299) && (currentScene === 4) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(60,286,12,12);
+        text("Incorrect!", 310, 365);
+        image(getImage("creatures/OhNoes"), 275, 280, 75, 75); //Oh noes Hopper
+        score -=100;
+        noLoop();
+    }
+    
+    
+//If statement for question 3 (Scene 5)
+    //Wrong answer
+    if( (mouseX > 75 && mouseX < 276 && mouseY > 203 && mouseY < 229) && (currentScene === 5) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(85,218,12,12);
+        textSize(20);
+        text("Incorrect!", 310, 375);
+        image(getImage("creatures/OhNoes"), 290, 286, 75, 75); //Oh noes Hopper
+        score -=100;
+        noLoop();
+    } 
+    //Wrong Answer
+    else if ( (mouseX > 75 && mouseX < 276 && mouseY > 232 && mouseY < 258) && (currentScene === 5) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(85,246,12,12);
+        textSize(20);
+        text("Incorrect!", 310, 375);
+        image(getImage("creatures/OhNoes"), 290, 286, 75, 75); //Oh noes Hopper
+        score -=100;
+        noLoop();
+    }
+    //Correct Answer
+    else if ( (mouseX > 75 && mouseX < 292 && mouseY > 259 && mouseY < 285) && (currentScene === 5) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(11, 171, 0);
+        ellipse(85,274,12,12);
+        text("Correct!", 310, 365);
+        image(getImage("creatures/Hopper-Happy"), 275, 280, 75, 75); //Oh noes Hopper
+        score +=100;
+        noLoop();
+    }
+    
+    
+//If statement for question 4 (Scene 6)
+    //Correct answer
+    if( (mouseX > 96 && mouseX < 235 && mouseY > 203 && mouseY < 229) && (currentScene === 6) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(11, 171, 0);
+        ellipse(107,219,12,12);
+        textSize(20);
+        text("Correct!", 310, 375);
+        image(getImage("creatures/Hopper-Happy"), 290, 286, 75, 75); //Oh noes Hopper
+        score +=200;
+        noLoop();
+    } 
+    //Wrong Answer
+    else if ( (mouseX > 96 && mouseX < 270 && mouseY > 231 && mouseY < 257) && (currentScene === 6) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(107,246,12,12);
+        textSize(20);
+        text("Incorrect!", 310, 375);
+        image(getImage("creatures/OhNoes"), 290, 286, 75, 75); //Oh noes Hopper
+        score -=200;
+        noLoop();
+    }
+    //Wrong Answer
+    else if ( (mouseX > 96 && mouseX < 248 && mouseY > 262 && mouseY < 288) && (currentScene === 6) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(107,272,12,12);
+        text("Incorrect!", 310, 365);
+        image(getImage("creatures/OhNoes"), 275, 280, 75, 75); //Oh noes Hopper
+        score -=200;
+        noLoop();
+    }
+   
+   
+//If statement for question 5 (Scene 7)
+    //Wrong answer
+    if( (mouseX > 96 && mouseX < 190 && mouseY > 200 && mouseY < 226) && (currentScene === 7) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(106,217,12,12);
+        textSize(20);
+        text("Incorrect!", 310, 375);
+        image(getImage("creatures/OhNoes"), 290, 286, 75, 75); //Oh noes Hopper
+        score -=200;
+        noLoop();
+    } 
+    //Correct Answer
+    else if ( (mouseX > 96 && mouseX < 220 && mouseY > 232 && mouseY < 258) && (currentScene === 7) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(11, 171, 0);
+        ellipse(106,247,12,12);
+        textSize(20);
+        text("Correct!", 310, 375);
+        image(getImage("creatures/Hopper-Happy"), 290, 286, 75, 75); //Oh noes Hopper
+        score +=200;
+        noLoop();
+    }
+    //Wrong Answer
+    else if ( (mouseX > 96 && mouseX < 220 && mouseY > 265 && mouseY < 291) && (currentScene === 7) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(106,277,12,12);
+        text("Incorrect!", 310, 365);
+        image(getImage("creatures/OhNoes"), 275, 280, 75, 75); //Oh noes Hopper
+        score -=200;
+        noLoop();
+    }
+   
+   
+//If statement for question 6 (Scene 8)
+    //Wrong answer
+    if( (mouseX > 78 && mouseX < 231 && mouseY > 206 && mouseY < 232) && (currentScene === 8) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(88,221,12,12);
+        textSize(20);
+        text("Incorrect!", 310, 375);
+        image(getImage("creatures/OhNoes"), 290, 286, 75, 75); //Oh noes Hopper
+        score -=200;
+        noLoop();
+    } 
+    //Correct Answer
+    else if ( (mouseX > 78 && mouseX < 231 && mouseY > 239 && mouseY < 265) && (currentScene === 8) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(11, 171, 0);
+        ellipse(88,251,12,12);
+        textSize(20);
+        text("Correct!", 310, 375);
+        image(getImage("creatures/Hopper-Happy"), 290, 286, 75, 75); //Oh noes Hopper
+        score +=200;
+        noLoop();
+    }
+    //Wrong Answer
+    else if ( (mouseX > 78 && mouseX < 240 && mouseY > 271 && mouseY < 297) && (currentScene === 8) && !answeredQuestion){
+        answeredQuestion = true;
+        fill(255, 0, 0);
+        ellipse(88,283,12,12);
+        text("Incorrect!", 310, 365);
+        image(getImage("creatures/OhNoes"), 275, 280, 75, 75); //Oh noes Hopper
+        score -=200;
+        noLoop();
+    }
+    
+    }
+   
+
+};
+
